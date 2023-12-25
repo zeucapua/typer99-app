@@ -1,0 +1,5 @@
+{
+  "name": "typer99-app-party",
+  "main": "party/index.ts",
+  "compatibilityDate": "2023-12-24"
+}
