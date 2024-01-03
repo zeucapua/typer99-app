@@ -104,8 +104,8 @@ export default class Server implements Party.Server {
                 }
               });
             }
-            this.mirror();
           }
+          this.mirror();
         }
 
       }
@@ -161,7 +161,8 @@ export default class Server implements Party.Server {
         data.values = {
           party_state: this.party_state,
           players: this.players,
-          target_string: this.target_string
+          target_string: this.target_string,
+          finished: this.finished
         }
         break;
       }

@@ -32,6 +32,7 @@
     (user_string.length / target_string.length) * 100
     : 0
   );
+  let finished : {id: string, result: number}[] = $state([]);
 
   // change or reset variables based on game state
   $effect(() => {
@@ -57,6 +58,7 @@
       }
       case "ending": {
         is_ready = false;
+        finished = [];
         target_string = "";
         user_string = "";
         break;
@@ -108,6 +110,7 @@
         players = data.values.players;
         game_state = data.values.party_state;
         target_string = data.values.target_string ?? "";
+        finished = data.values.finished ?? [];
         break;
       }
     }
@@ -158,7 +161,7 @@
 {:else if game_state === "ending"}
   <h1>Leaderboard</h1>
   {#each players as player : Player}
-    <p>{player.name}: {player.score}</p>
+    <p>{player.name}: {player.score} | {player.is_ready}</p>
   {/each}
   <label for="ready">
     <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
