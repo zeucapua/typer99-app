@@ -19,14 +19,6 @@ export default class Server implements Party.Server {
   finished : { id: string, result: number }[] = [];
 
   onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
-    // A websocket just connected!
-    console.log(
-      `Connected:
-      id: ${conn.id}
-      room: ${this.party.id}
-      url: ${new URL(ctx.request.url).pathname}`
-    );
-
     // create a player
     this.players.push({
       conn_id: conn.id,
@@ -65,7 +57,7 @@ export default class Server implements Party.Server {
             setTimeout(() => {
               this.party.broadcast(JSON.stringify({ type: "startGame" })); 
               this.party_state = "running";
-              this.target_string = faker.word.words({ count: 5 });
+              this.target_string = faker.word.words({ count: 25 });
               this.finished = [];
               this.mirror();
             }, 5000);
@@ -112,9 +104,7 @@ export default class Server implements Party.Server {
                 }
               });
             }
-            this.party.broadcast(JSON.stringify({
-              type: "ending"
-            }));
+            this.mirror();
           }
         }
 
@@ -124,12 +114,13 @@ export default class Server implements Party.Server {
     else if (this.party_state === "ending") {
       // what to do in ending screen?
       // emoji? chat?
-      switch (message) {
+      switch (type) {
         case "mirror": {
           this.mirror();
           break;
         }
-        case "reset": {
+        case "ready": {
+          console.log("ending ready", { values, players: this.players });
           let num_ready = 0;
 
           // update player ready
@@ -143,7 +134,8 @@ export default class Server implements Party.Server {
               p.score = 0;
               p.is_ready = false;
             });
-            this.party.broadcast(JSON.stringify({ type: "reset" }));
+            this.party_state = "lobby";
+            this.mirror();
           }
         }
       }
@@ -160,12 +152,14 @@ export default class Server implements Party.Server {
     switch (this.party_state) {
       case "lobby": {
         data.values = {
-          players: this.players
+          party_state: this.party_state,
+          players: this.players,
         }
         break;
       }
       case "running": {
         data.values = {
+          party_state: this.party_state,
           players: this.players,
           target_string: this.target_string
         }
@@ -173,6 +167,7 @@ export default class Server implements Party.Server {
       }
       case "ending": {
         data.values = {
+          party_state: this.party_state,
           players: this.players
         }
         break;
