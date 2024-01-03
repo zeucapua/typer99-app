@@ -145,6 +145,7 @@ export default class Server implements Party.Server {
   // when a connection leaves, remove a Player associated
   onClose(connection: Party.Connection<unknown>): void | Promise<void> {
      this.players = this.players.filter((p) => p.conn_id !== connection.id);
+     this.mirror();
   }
 
   mirror() {

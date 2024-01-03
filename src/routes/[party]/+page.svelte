@@ -146,18 +146,22 @@
 {:else if game_state === "running"}
   <h1>Game</h1>
   <p>
-  {#each target_string as letter, i}
-    {#if (user_string.length === 0) || (i > user_string.length)}
-      <span style:color="gray">{letter}</span>
-    {:else if (letter === user_string[i])}
-      <span style:color="green">{letter}</span>
-    {:else}
-      <span style:color="red">{letter}</span> 
-    {/if}
-  {/each}
+    {#each target_string as letter, i}
+      {#if (user_string.length === 0) || (i > user_string.length)}
+        <span style:color="gray">{letter}</span>
+      {:else if (letter === user_string[i])}
+        <span style:color="green">{letter}</span>
+      {:else}
+        <span style:color="red">{letter}</span> 
+      {/if}
+    {/each}
   </p>
   <input type="text" bind:value={user_string} disabled={progress === 100}/>
   <progress value={progress} max={100} />
+
+  {#each finished as fin : {id: string, result: number}}
+    <p>{fin.id}</p>
+  {/each}
 {:else if game_state === "ending"}
   <h1>Leaderboard</h1>
   {#each players as player : Player}
