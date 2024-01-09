@@ -70,6 +70,7 @@ export default class Server implements Party.Server {
           this.players.map((p) => {
             if (p.conn_id === sender.id) p.name = values.name;
           });
+          console.log(this.players);
 
           this.mirror();
           break;

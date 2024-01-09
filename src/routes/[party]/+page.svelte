@@ -121,54 +121,65 @@
   });
 </script>
 
-<p>Party #{party_id} ({conn_id})</p>
-{#if game_state === "lobby"}
+<main class="flex flex-col gap-8 text-2xl">
+  <p>Party #{party_id} ({conn_id})</p>
+  {#if game_state === "lobby"}
 
-  <div>
-    <input bind:value={name} type="text" placeholder="Joe" />
-    <button onclick={updateName}>Update</button>
-    <label for="ready">
-      <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
-      Ready{is_ready ? "!" : "?"} 
-    </label>
-  </div>
+    <div>
+      <input class="bg-transparent border-b" bind:value={name} type="text" placeholder="Joe" />
+      <button class="text-lg px-4 py-2 bg-white text-blue-600 rounded-full" onclick={updateName}>
+        Update
+      </button>
+      <label for="ready">
+        <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
+        Ready{is_ready ? "!" : "?"} 
+      </label>
+    </div>
 
-  Others:
-  {#each players as player : Player}
-    <!-- display other players' state -->
-    {#if player.conn_id !== conn_id}
-      <div>
-        <p>{player.name} | {player.is_ready}</p>
-      </div>
-    {/if}
-  {/each}
-
-{:else if game_state === "running"}
-  <h1>Game</h1>
-  <p>
-    {#each target_string as letter, i}
-      {#if (user_string.length === 0) || (i > user_string.length)}
-        <span style:color="gray">{letter}</span>
-      {:else if (letter === user_string[i])}
-        <span style:color="green">{letter}</span>
-      {:else}
-        <span style:color="red">{letter}</span> 
+    Others:
+    {#each players as player : Player}
+      <!-- display other players' state -->
+      {#if player.conn_id !== conn_id}
+        <div>
+          <p>{player.name} | {player.is_ready}</p>
+        </div>
       {/if}
     {/each}
-  </p>
-  <input type="text" bind:value={user_string} disabled={progress === 100}/>
-  <progress value={progress} max={100} />
 
-  {#each finished as fin : {id: string, result: number}}
-    <p>{fin.id}</p>
-  {/each}
-{:else if game_state === "ending"}
-  <h1>Leaderboard</h1>
-  {#each players as player : Player}
-    <p>{player.name}: {player.score} | {player.is_ready}</p>
-  {/each}
-  <label for="ready">
-    <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
-    {is_ready ? "Waiting for others" : "Back to Lobby?"} 
-  </label>
-{/if}
+  {:else if game_state === "running"}
+    <h1>Game</h1>
+    <p>
+      {#each target_string as letter, i}
+        {#if (user_string.length === 0) || (i > user_string.length)}
+          <span class={`${user_string.length === i && "border border-white"} text-gray-400`}>{letter}</span>
+        {:else if (letter === user_string[i])}
+          <span class={`${user_string.length === i && "border border-white"} text-green-400`}>{letter}</span>
+        {:else}
+          <span class={`${user_string.length === i && "border border-white"} text-red-400`}>{letter}</span> 
+        {/if}
+      {/each}
+    </p>
+    <input class="bg-transparent border-b border-white" type="text" bind:value={user_string} disabled={progress === 100}/>
+    <progress class="bg-transparent border border-white" value={progress} max={100} />
+
+    {#each finished as fin : {id: string, result: number}}
+      <p>{fin.id}</p>
+    {/each}
+
+  {:else if game_state === "ending"}
+    <h1>Leaderboard</h1>
+    {#each players as player : Player}
+      <p>{player.name}: {player.score} | {player.is_ready}</p>
+    {/each}
+    <label for="ready">
+      <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
+      {is_ready ? "Waiting for others" : "Back to Lobby?"} 
+    </label>
+  {/if}
+</main>
+
+<style>
+  progress {
+    background-color: white;
+  }
+</style>

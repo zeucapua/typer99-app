@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: Space Grotesk;
+  src: url("/SpaceGrotesk-Variable.woff2");
+}
+
+@font-face {
+  font-family: Chillax;
+  src: url("/Chillax-Variable.woff2");
+}
