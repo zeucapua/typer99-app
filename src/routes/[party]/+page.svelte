@@ -165,7 +165,7 @@
         {/if}
       {/each}
     </p>
-    <input class="bg-transparent border-b border-white" type="text" bind:value={user_string} disabled={progress === 100}/>
+    <input autofocus class="bg-transparent border-b border-white" type="text" bind:value={user_string} disabled={progress === 100}/>
     <progress class="bg-transparent border border-white" value={progress} max={100} />
 
     <div class="flex justify-evenly">
