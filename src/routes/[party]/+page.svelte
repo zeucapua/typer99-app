@@ -36,7 +36,7 @@
 
   // ending
   let leaderboard = $derived(
-    players ? players.toSorted((a,b) => b.score - a.score)
+    players.length !== 0 ? players.toSorted((a,b) => b.score - a.score)
     : []
   );
 
@@ -168,9 +168,23 @@
     <input class="bg-transparent border-b border-white" type="text" bind:value={user_string} disabled={progress === 100}/>
     <progress class="bg-transparent border border-white" value={progress} max={100} />
 
-    {#each finished as fin : {id: string, result: number}}
-      <p>{fin.id}</p>
-    {/each}
+    <div class="flex justify-evenly">
+      {#each players as player, i (player.conn_id)}
+        {#if finished.find((fin) => fin.id === player.conn_id)}
+          <img 
+            src="/hand-ok-2.svg" 
+            alt="Pixel Hand OK 2 by StreamlineHQ" 
+            class={`w-full max-w-16 pb-2 ${conn_id === player.conn_id && "border-b-4 border-dashed"}`}
+          />    
+        {:else}
+          <img 
+            src="/hand-writing.svg" 
+            alt="Pixel Hand Writing by StreamlineHQ" 
+            class={`w-full max-w-16 pb-2 ${conn_id === player.conn_id && "border-b-4 border-dashed"}`}
+          />    
+        {/if}
+      {/each}
+    </div>
 
   {:else if game_state === "ending"}
     <h1>Leaderboard</h1>
