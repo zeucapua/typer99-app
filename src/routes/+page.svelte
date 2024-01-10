@@ -2,7 +2,11 @@
   let party_id : string = $state("");
 </script>
 
-<main class="flex flex-col gap-8 justify-center">
+<svelte:head>
+  <title>typer99: May the best typer win!</title>
+</svelte:head>
+
+<main class="flex flex-col gap-8 justify-center my-12">
   <h1 class="text-9xl font-chillax font-black text-center drop-shadow-xl">
     typer_99
   </h1>

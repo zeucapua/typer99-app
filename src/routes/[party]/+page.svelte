@@ -174,7 +174,11 @@
   });
 </script>
 
-<main class="flex flex-col gap-8 text-2xl">
+<svelte:head>
+  <title>Game {party_id} - typer99</title>
+</svelte:head>
+
+<main class="p-8 flex flex-col gap-8 text-2xl">
   <p>Party # {party_id} ({conn_id})</p>
 
   {#if game_state === "lobby"}
@@ -184,18 +188,32 @@
       <button class="text-lg px-4 py-2 bg-white text-blue-600 rounded-full" onclick={updateName}>
         Update
       </button>
-      <label for="ready">
-        <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
-        Ready{is_ready ? "!" : "?"} 
-      </label>
     </div>
+    <label for="ready">
+      <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
+      Ready{is_ready ? "!" : "?"} 
+    </label>
+
 
     Others:
     {#each players as player : Player}
       <!-- display other players' state -->
       {#if player.conn_id !== conn_id}
-        <div>
-          <p>{player.name} | {player.is_ready}</p>
+        <div class="flex gap-4">
+          <p>{player.name}</p>
+          {#if player.is_ready}
+            <img
+              src="/hand-awesome-3.svg"
+              alt="Hand Awesome 3 by StreamlineHQ"
+              class="w-full max-w-8"
+            />
+          {:else}
+            <img 
+              src="/hand-dislike-1.svg"
+              alt="Hand Dislike 1 by StreamlineHQ"
+              class="w-full max-w-8"
+            />
+          {/if}
         </div>
       {/if}
     {/each}
