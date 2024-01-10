@@ -26,6 +26,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@neoconfetti/svelte": "^2.2.1",
 		"partysocket": "0.0.18"
 	}
 }

@@ -1,8 +1,10 @@
 <script lang="ts">
   import PartySocket from "partysocket";
+  import { confetti } from "@neoconfetti/svelte";
+
   import { dev } from "$app/environment";
   import { page } from "$app/stores";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   type Player = {
     conn_id: string,
@@ -12,6 +14,9 @@
   };
   
   /* VARIABLES */
+  // confetti :3
+  let confetti_visible = $state(false);
+
   // current universal user details
   let conn_id = $state("");
   let name = $state((Math.random() + 1).toString(36).substring(7)); // initial name
@@ -45,6 +50,7 @@
     switch (game_state) {
       case "lobby": {
         is_ready = false;
+        updateName();
         break;
       }
       case "running": {
@@ -53,6 +59,9 @@
           for (let i = 0; i < target_string.length; i++) {
             num_incorrect += (user_string[i] !== target_string[i]) ? 1 : 0;
           }
+
+          toggleConfetti();
+
           socket.send(JSON.stringify({
             type: "finished",
             values: {
@@ -102,6 +111,13 @@
       socket.send(data);
     }
   }
+
+  // running + ending
+  async function toggleConfetti() {
+    confetti_visible = false;
+    await tick();
+    confetti_visible = true;
+  }
   
   /* PARTYKIT BROADCAST LISTENER */
   socket.addEventListener("message", async (event) => {
@@ -121,14 +137,11 @@
       }
     }
   });
-
-  onMount(() => {
-    updateName();
-  });
 </script>
 
 <main class="flex flex-col gap-8 text-2xl">
-  <p>Party #{party_id} ({conn_id})</p>
+  <p>Party # {party_id} ({conn_id})</p>
+
   {#if game_state === "lobby"}
 
     <div>
@@ -195,6 +208,10 @@
       <input name="ready" type="checkbox" bind:checked={is_ready} onchange={toggleReady} />
       {is_ready ? "Waiting for others" : "Back to Lobby?"} 
     </label>
+  {/if}
+
+  {#if confetti_visible}
+    <div class="flex justify-center" use:confetti />
   {/if}
 </main>
 
