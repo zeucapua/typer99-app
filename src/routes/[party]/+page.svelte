@@ -4,7 +4,7 @@
 
   import { dev } from "$app/environment";
   import { page } from "$app/stores";
-  import { onMount, tick } from "svelte";
+  import { untrack, tick } from "svelte";
 
   type Player = {
     conn_id: string,
@@ -78,11 +78,21 @@
         finished = [];
         target_string = "";
         user_string = "";
+        bomb_charge = 0;
+        rocket_charge = 0;
         break;
       }
     }
   });
 
+  $effect(() => {
+    if (user_string) {
+      tick().then(() => {
+        if (bomb_charge < 20) bomb_charge++;
+        if (rocket_charge < 20) rocket_charge++;
+      });
+    }
+  })
 
   /* SOCKET */
   const socket = new PartySocket({
@@ -111,7 +121,13 @@
       });
 
       socket.send(data);
+      bomb_charge = 0;
     }
+  }
+
+  function activateRocket() {
+    user_string = user_string + target_string.substring(user_string.length, user_string.length + 10);
+    rocket_charge = 0;
   }
   
   // lobby + ending
@@ -200,14 +216,25 @@
     <input autofocus class="bg-transparent border-b border-white" type="text" bind:value={user_string} disabled={progress === 100}/>
     <progress class="bg-transparent border border-white" value={progress} max={100} />
 
-    <div class="w-full flex justify-center">
+    <div class="w-full flex justify-center gap-12">
       <button 
         onclick={activateBomb}
+        disabled={bomb_charge < 20}
         class="w-full max-w-24 border-4 border-white rounded-full p-4 disabled:border-dashed disabled:bg-neutral-700"
       >
         <img 
           src="/entertainment-events-hobbies-bomb-1.svg"
           alt="Entertainment Events Hobbies Bomb 1 by StreamlineHQ"
+        />
+      </button>
+      <button 
+        onclick={activateRocket}
+        disabled={rocket_charge < 20}
+        class="w-full max-w-24 border-4 border-white rounded-full p-4 disabled:border-dashed disabled:bg-neutral-700"
+      >
+        <img 
+          src="/business-product-startup-1.svg"
+          alt="Business Product Startup 1 by StreamlineHQ"
         />
       </button>
     </div>
