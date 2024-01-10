@@ -37,6 +37,8 @@
     (user_string.length / target_string.length) * 100
     : 0
   );
+  let bomb_charge = $state(0);
+  let rocket_charge = $state(0);
   let finished : {id: string, result: number}[] = $state([]);
 
   // ending
@@ -100,6 +102,17 @@
       socket.send(data);
     }
   }
+
+  // running 
+  function activateBomb() {
+    if (socket) {
+      const data = JSON.stringify({
+        type: "bomb",
+      });
+
+      socket.send(data);
+    }
+  }
   
   // lobby + ending
   function toggleReady() {
@@ -126,6 +139,12 @@
     switch (data.type) {
       case "connected": {
         conn_id = data.values.conn_id;
+        break;
+      }
+      case "bombed": {
+        if (conn_id !== data.values.activator) {
+          user_string = user_string.length < 10 ? "" : user_string.substring(0, user_string.length - 10);
+        }
         break;
       }
       case "mirror": {
@@ -180,6 +199,18 @@
     </p>
     <input autofocus class="bg-transparent border-b border-white" type="text" bind:value={user_string} disabled={progress === 100}/>
     <progress class="bg-transparent border border-white" value={progress} max={100} />
+
+    <div class="w-full flex justify-center">
+      <button 
+        onclick={activateBomb}
+        class="w-full max-w-24 border-4 border-white rounded-full p-4 disabled:border-dashed disabled:bg-neutral-700"
+      >
+        <img 
+          src="/entertainment-events-hobbies-bomb-1.svg"
+          alt="Entertainment Events Hobbies Bomb 1 by StreamlineHQ"
+        />
+      </button>
+    </div>
 
     <div class="flex justify-evenly">
       {#each players as player, i (player.conn_id)}

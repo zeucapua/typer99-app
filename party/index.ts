@@ -80,6 +80,16 @@ export default class Server implements Party.Server {
 
     else if (this.party_state === "running") {
       switch (type) {
+        // uses bomb powerup
+        case "bomb": {
+          const data = JSON.stringify({ 
+            type: "bombed",
+            values: { activator: sender.id }
+          });
+
+          this.party.broadcast(data);
+          break;
+        }
         
         // when a player is finished
         case "finished": {
