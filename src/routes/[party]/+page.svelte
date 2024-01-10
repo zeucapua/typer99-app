@@ -34,6 +34,12 @@
   );
   let finished : {id: string, result: number}[] = $state([]);
 
+  // ending
+  let leaderboard = $derived(
+    players ? players.toSorted((a,b) => b.score - a.score)
+    : []
+  );
+
   // change or reset variables based on game state
   $effect(() => {
     switch (game_state) {
@@ -168,7 +174,7 @@
 
   {:else if game_state === "ending"}
     <h1>Leaderboard</h1>
-    {#each players as player : Player}
+    {#each leaderboard as player : Player}
       <p>{player.name}: {player.score} | {player.is_ready}</p>
     {/each}
     <label for="ready">
