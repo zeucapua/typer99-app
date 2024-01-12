@@ -18,7 +18,7 @@
           class="w-8"
         />
       </a>
-      <a href="https:/github.com/zeucapua/typer99-app" target="_blank">
+      <a href="https://github.com/zeucapua/typer99-app" target="_blank">
         <img
           src="/search-coding.svg"
           alt="Search Coding by StreamlineHQ"
